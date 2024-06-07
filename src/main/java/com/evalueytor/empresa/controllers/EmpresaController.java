@@ -8,37 +8,44 @@ import java.util.List;
 import java.util.Optional;
 import com.evalueytor.empresa.repositories.EmpresaRepository;
 import com.evalueytor.empresa.models.Empresa;
+import com.evalueytor.empresa.repositories.ProveedorRepository;
+import com.evalueytor.empresa.models.Proveedor;
+
 
 @RestController
-@RequestMapping("/api/empresa")
+@RequestMapping("/api")
 public class EmpresaController {
     @Autowired
     EmpresaRepository empresaRepository;
 
+    @Autowired
+    ProveedorRepository proveedorRepository;
+
     // Listar todo
-    @GetMapping("/findall")
-    public List<Empresa> list() {
+    @GetMapping("/empresa/findall")
+    public List<Empresa> listarEmpresa() {
         return empresaRepository.findAll();
     }
 
+
     // Listar por Id
-    @GetMapping("/findbyid/{id}")
-    public ResponseEntity<Empresa> obtenerPremioPorId(@PathVariable Long id) {
+    @GetMapping("/empresa/findbyid/{id}")
+    public ResponseEntity<Empresa> obtenerEmpresaPorId(@PathVariable Long id) {
         Optional<Empresa> premioOptional = empresaRepository.findById(id);
         return premioOptional.map(premio -> new ResponseEntity<>(premio, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear una nueva empresa
-    @PostMapping("/save")
-    public ResponseEntity<Empresa> crearPremio(@RequestBody Empresa nuevoPremio) {
+    @PostMapping("/empresa/save")
+    public ResponseEntity<Empresa> crearEmpresa(@RequestBody Empresa nuevoPremio) {
         Empresa premioGuardado = empresaRepository.save(nuevoPremio);
         return new ResponseEntity<>(premioGuardado, HttpStatus.CREATED);
     }
 
     // Actualizar empresa
-    @PutMapping("/updatebyid/{id}")
-    public ResponseEntity<Empresa> actualizarEmopresa(@PathVariable Long id, @RequestBody Empresa empresaActual) {
+    @PutMapping("/empresa/updatebyid/{id}")
+    public ResponseEntity<Empresa> actualizarEmpresa(@PathVariable Long id, @RequestBody Empresa empresaActual) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(id);
         return empresaOptional.map(empresa -> {
             empresa.setId(id);
@@ -50,7 +57,7 @@ public class EmpresaController {
     }
 
     // Eliminar un empresa por ID
-    @DeleteMapping("/deletebyid/{id}")
+    @DeleteMapping("/empresa/deletebyid/{id}")
     public ResponseEntity<Void> eliminarEmpresa(@PathVariable Long id) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(id);
         if (empresaOptional.isPresent()) {
@@ -61,4 +68,23 @@ public class EmpresaController {
         }
     }
 
+    @GetMapping("/proveedor/findall")
+    public List<Proveedor> listarProveedor() {
+        return proveedorRepository.findAll();
+    }
+
+      // Listar por Id
+      @GetMapping("/proveedor/findbyid/{id}")
+      public ResponseEntity<Proveedor> obtenerProveedorsaPorId(@PathVariable Long id) {
+          Optional<Proveedor> proveedorOptional = proveedorRepository.findById(id);
+          return proveedorOptional.map(proveedor -> new ResponseEntity<>(proveedor, HttpStatus.OK))
+                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+      }
+
+    // Crear una nuevo proveedor
+    @PostMapping("/proveedor/save")
+    public ResponseEntity<Empresa> crearProveedor(@RequestBody Proveedor nuevoProveedor) {
+        Proveedor proveedorGuardado = proveedorRepository.save(nuevoProveedor);
+        return new ResponseEntity<>(proveedorGuardado, HttpStatus.CREATED);
+    }
 }
